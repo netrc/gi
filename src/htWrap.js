@@ -22,7 +22,7 @@ const _getAndDoOld = function getAndDoOld( Url, parseType, cb ) {
   //    if (parseType == JSONParse) {
    //     resp.data = JSON.parse(resp.data); 
     //  }
-      return cb(resp.data)
+      return (cb) ? cb(resp.data) : resp.data
     }).catch( (err) => console.log(`Error: ${err.message}`) 
     ).finally( () => console.log('final') );
 } 

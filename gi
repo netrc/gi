@@ -7,7 +7,6 @@ const gists = require('./src/gists')
 const htw = require('./src/htWrap')
 
 const username='netrc'
-const ListURL='https://api.github.com/gists'
 
 const JSONParse = Symbol(); 
 const NoParse = Symbol(); 
@@ -31,15 +30,23 @@ htw.setHeaders( 'Authorization', `Basic ${basicAuthB64}` )
 
 switch (av[2]) {
   case 'list': console.log('list');
-      htw.getAndDo( ListURL, JSONParse, gists.listGistsCB ).then( ret => {
-        console.log( ret.join('\n') )
-      });
+    htw.getAndDo( gists.ListURL, JSONParse ).then( glist => {
+      glist.forEach( g => console.log( gists.gToString(g) ) )
+    }).catch( err => console.error(err) );
     break; 
-  case 'cat': console.log('doing cat'); 
-      htw.getAndDo( ListURL, JSONParse, gists.catGistsCB ).then( ret => {
-        console.log('cat.then...'); 
-      });
+  case 'cat': console.log('doing xcat'); 
+    htw.getAndDo( gists.ListURL, JSONParse ).then( glist => {
+      const fURL = gists.getFURL( glist, process.argv[3] )   // here we can loop over argv
+      console.log(`cat.then ${fURL}...`); 
+      htw.getAndDo( fURL, "NoParse" ).then( d => {
+        //console.log(`get furl, then...`);
+        console.log(d)
+      }).catch( err => console.error(err) );
+    }).catch( err => console.error(err) );
     break; 
+  case 'vi': console.log('doing vi')
+    console.log(`get ${process.argv[3]}`)
+    break;
   case 'push': //console.log('doing push'); 
     readFilesAndPush(); 
     break; 

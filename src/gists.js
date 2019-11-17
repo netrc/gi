@@ -2,16 +2,12 @@
 // gist API tools
 
 const fs = require('fs')
-const process = require('process')
 const htw = require('./htWrap')
 
-const _listGistsCB = function listGistsCB ( glist ) { 
-  //console.log('inside _list');
-  return glist.map( g => {
-    const fname = Object.keys(g.files)[0]; 
-  //console.log(`lg: ${fname}`)
+// TODO: func that does simple glist structure string format
+const _gToString = function fToString ( g ) {
+    const fname = Object.keys(g.files)[0];  // TODO: one file gist
     return `${fname} // (${g.public?'public':'private'}) ${g.description} - ${g.files[fname].language} - ${g.files[fname].size} bytes`;
-  }); 
 }
 
 const _gistNameFilter = function gistNameFilter( g, f ) { 
@@ -19,22 +15,17 @@ const _gistNameFilter = function gistNameFilter( g, f ) {
   return fname===f; 
 }
 
-const _catOneGist = function catGist( d ) { // how do I know if it's json or not? 
-  //console.log(JSON.stringify(d)); 
-  console.log(d); 
-} 
-
-const _catGistsCB = function catGistsCB ( glist ) { 
-  process.argv.slice(3).forEach( f => { 
-    //console.log(`got glist: looking for ${f}`);
-    glist.filter( g => _gistNameFilter(g,f) ).forEach( g => { 
-      const raw_url = g.files[f].raw_url; 
-      //console.log(`found g for ${f} ${raw_url} - now cat it`);
-      htw.getAndDo( raw_url, "NoParse", _catOneGist );
-    }); 
-  }); 
+const _getFURL = function getFURL ( glist, fname ) {
+  const fstruct = glist.filter( g => _gistNameFilter(g,fname) )
+  // if fstruct.length != 1....
+  const g = fstruct[0]
+  // console.dir(g.files);
+  const raw_url = g.files[fname].raw_url; 
+  return raw_url;
 }
+
 module.exports = {
-  listGistsCB: _listGistsCB,
-  catGistsCB: _catGistsCB
+  ListURL: 'https://api.github.com/gists',
+  gToString: _gToString,
+  getFURL: _getFURL
 }
