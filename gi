@@ -9,15 +9,15 @@ const htw = require('./src/htWrap')
 
 const username='netrc'
 
-const JSONParse = Symbol(); 
-const NoParse = Symbol(); 
+const JSONParse = Symbol()
+const NoParse = Symbol()
 
 if (!('GI_GIST_PAT' in process.env) || process.env.GI_GIST_PAT=="") {
-  console.log('no GI_GIST_PAT'); // maybe just on -v and -d 
-  //exit
+  console.log('no GI_GIST_PAT') // maybe just on -v and -d 
+  process.exit(1)
 }
 const PAT= process.env.GI_GIST_PAT
-const basicAuthB64 = Buffer.from(`${username}:${PAT}`).toString('base64'); 
+const basicAuthB64 = Buffer.from(`${username}:${PAT}`).toString('base64') 
 htw.setHeaders( 'Authorization', `Basic ${basicAuthB64}` )
 
 program.version('0.1.0')    // -v for free (usage string deduced) // and --help
@@ -28,22 +28,22 @@ program.command('vi').action(commandVi)
 program.parse(process.argv)
 
 function commandList() {
-  console.log('list');
+  console.log('list')
   htw.getAndDo( gists.ListURL, JSONParse ).then( glist => {
     glist.forEach( g => console.log( gists.gToString(g) ) )
-  }).catch( err => console.error(err) );
+  }).catch( err => console.error(err) )
 }
 
 function commandCat() {
-  console.log('doing xcat'); 
+  console.log('doing xcat') 
   htw.getAndDo( gists.ListURL, JSONParse ).then( glist => {
     const fURL = gists.getFURL( glist, process.argv[3] )   // here we can loop over argv
-    console.log(`cat.then ${fURL}...`); 
+    console.log(`cat.then ${fURL}...`) 
     htw.getAndDo( fURL, "NoParse" ).then( d => {
-      //console.log(`get furl, then...`);
+      //console.log(`get furl, then...`)
       console.log(d)
-    }).catch( err => console.error(err) );
-  }).catch( err => console.error(err) );
+    }).catch( err => console.error(err) )
+  }).catch( err => console.error(err) )
 }
 
 function commandVi() {
