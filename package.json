@@ -1,6 +1,6 @@
 {
   "name": "gi",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "yet another cli/web todo tool",
   "main": "gi",
   "dependencies": {
