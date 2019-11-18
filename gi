@@ -20,8 +20,7 @@ const PAT= process.env.GI_GIST_PAT
 const basicAuthB64 = Buffer.from(`${username}:${PAT}`).toString('base64'); 
 htw.setHeaders( 'Authorization', `Basic ${basicAuthB64}` )
 
-const Usage = '[-h] [-d] { list | vi | cp } gistName'; 
-program.version('0.1.0')    // -v for free // and --help
+program.version('0.1.0')    // -v for free (usage string deduced) // and --help
 program.option('-d', 'debug info')
 program.command('list').action(commandList)
 program.command('cat').action(commandCat)
